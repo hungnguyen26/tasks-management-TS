@@ -14,13 +14,22 @@ app.get("/tasks", async (req: Request, res: Response) => {
   const tasks = await Task.find({
     deleted:false
   })
-
-  console.log(tasks);
-  
-
   res.json({
     code:200,
     tasks: tasks
+  });
+});
+
+app.get("/tasks/detail/:id", async (req: Request, res: Response) => {
+  const id: String = req.params.id;
+
+  const task = await Task.findOne({
+    deleted:false,
+    _id: id
+  })
+  res.json({
+    code:200,
+    task: task
   });
 });
 
