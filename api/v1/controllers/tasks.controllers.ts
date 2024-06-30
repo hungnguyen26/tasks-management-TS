@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import Task from "../model/tasks.model";
 import paginitionHelper from "../../../helpers/paginition";
+import searchHelper from "../../../helpers/search";
 
 export const index = async (req: Request, res: Response) => {
   //find
@@ -34,6 +35,14 @@ export const index = async (req: Request, res: Response) => {
      countTasks
    );
    // end phần phân trang
+
+   // search
+   const objectSearch = searchHelper(req.query);
+
+  if (req.query.keyword) {
+    find['title'] = objectSearch.regex;
+  }
+  // end search
 
   const tasks = await Task.find(find).sort(sort).limit(objectPagination.limitItem)
   .skip(objectPagination.skip);;
