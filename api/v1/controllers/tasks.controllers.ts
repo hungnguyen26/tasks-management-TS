@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import Task from "../model/tasks.model";
+import paginitionHelper from "../../../helpers/paginition";
 
 export const index = async (req: Request, res: Response) => {
   //find
@@ -22,7 +23,20 @@ export const index = async (req: Request, res: Response) => {
   }
   //end sort
 
-  const tasks = await Task.find(find).sort(sort);
+   // phần phân trang
+   const countTasks = await Task.countDocuments(find); // đếm tổng số sản phẩm
+   let objectPagination = paginitionHelper(
+     {
+       limitItem: 2, // sl phần tử mỗi trang
+       currentPage: 1,
+     },
+     req.query,
+     countTasks
+   );
+   // end phần phân trang
+
+  const tasks = await Task.find(find).sort(sort).limit(objectPagination.limitItem)
+  .skip(objectPagination.skip);;
 
   res.json(tasks);
 };
