@@ -137,7 +137,7 @@ export const changeMulti = async (req: Request, res: Response)=>{
   }
 }
 
-// [PATCH] /api/v1/tasks/create
+// [POST] /api/v1/tasks/create
 export const create = async (req: Request, res: Response)=>{
   try {
     const task = new Task(req.body);
@@ -148,6 +148,28 @@ export const create = async (req: Request, res: Response)=>{
       message: "Cập nhật trạng thái thành công!!",
       data: data
     });
+  } catch (error) {
+    res.json({
+      code: 404,
+      message: "Không tồn tại!!",
+    });
+  }
+  
+}
+
+// [POST] /api/v1/tasks/edit
+export const edit = async (req: Request, res: Response)=>{
+  try {
+    const id = req.params.id;
+    await Task.updateOne({
+      _id: id
+    }, req.body);
+
+    res.json({
+      code: 200,
+      message: "Cập nhật thành công!!",
+    });
+    
   } catch (error) {
     res.json({
       code: 404,
